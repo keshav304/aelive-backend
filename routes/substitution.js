@@ -1,4 +1,3 @@
-// routes/substitution.js
 const express = require("express");
 const Substitution = require("../models/Substitution");
 const router = express.Router();
@@ -28,6 +27,26 @@ router.post("/log", async (req, res) => {
     res
       .status(500)
       .json({ error: "Error logging substitution", message: err.message });
+  }
+});
+
+// Route to get all substitutions
+router.get("/list", async (req, res) => {
+  try {
+    // Fetch all substitutions from the database
+    const substitutions = await Substitution.find();
+
+    // If no substitutions are found
+    if (substitutions.length === 0) {
+      return res.status(404).json({ message: "No substitutions found!" });
+    }
+
+    // Return all substitutions
+    res.status(200).json(substitutions);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Error fetching substitutions", message: err.message });
   }
 });
 
