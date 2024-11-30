@@ -5,6 +5,7 @@ const router = express.Router();
 
 // Route to log substitution data
 router.post("/log", async (req, res) => {
+  console.log("Received substitution data:", req.body);
   const {
     playerOutName,
     playerOutNumber,
