@@ -22,10 +22,13 @@ router.post("/log", async (req, res) => {
       playerInNumber,
       substitutionTime,
     });
+    console.log("newSubstitution", newSubstitution);
 
-    await newSubstitution.save();
+    const response = await newSubstitution.save();
+    console.log("response", response);
     res.status(200).json({ message: "Substitution logged successfully!" });
   } catch (err) {
+    console.log("err", err);
     res
       .status(500)
       .json({ error: "Error logging substitution", message: err.message });
