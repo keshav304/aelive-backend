@@ -5,13 +5,12 @@ const router = express.Router();
 
 // Route to log substitution data
 router.post("/log", async (req, res) => {
-  console.log("Received substitution data:", req.body);
   const {
     playerOutName,
     playerOutNumber,
     playerInName,
     playerInNumber,
-    substitutionTime,
+    subTime,
   } = req.body;
 
   try {
@@ -20,15 +19,12 @@ router.post("/log", async (req, res) => {
       playerOutNumber,
       playerInName,
       playerInNumber,
-      substitutionTime,
+      substitutionTime: subTime,
     });
-    console.log("newSubstitution", newSubstitution);
 
-    const response = await newSubstitution.save();
-    console.log("response", response);
+    await newSubstitution.save();
     res.status(200).json({ message: "Substitution logged successfully!" });
   } catch (err) {
-    console.log("err", err);
     res
       .status(500)
       .json({ error: "Error logging substitution", message: err.message });
