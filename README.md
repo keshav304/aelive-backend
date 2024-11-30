@@ -1,6 +1,4 @@
-Here is a `README.md` file based on the instructions you requested:
 
-```markdown
 # CasperCG Server Setup and Running Instructions
 
 This README will guide you through the process of setting up and running the **CasperCG Server**, and how to execute commands and view substitutions on your screen using a terminal.
