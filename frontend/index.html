@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Substitution Caption</title>
+    <style>
+      /* General Reset */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: "Arial", sans-serif;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        background: #000; /* black background for broadcast */
+      }
+
+      /* Caption container styling */
+      #caption-container {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+        color: white;
+        padding: 25px 40px;
+        border-radius: 15px;
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.7); /* Subtle shadow */
+        text-align: center;
+        max-width: 600px;
+        width: 100%;
+        font-size: 24px; /* Larger text for better visibility */
+        line-height: 1.3;
+        display: none; /* Hidden initially */
+      }
+
+      /* Substitution Player Info */
+      .player-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 26px;
+        font-weight: bold;
+        text-transform: uppercase; /* Make names uppercase for better visibility */
+      }
+
+      /* Arrow styling */
+      .arrow {
+        font-size: 36px;
+        color: #ffcc00; /* Bright gold for better visibility */
+        margin: 0 10px;
+      }
+
+      /* Player Names */
+      .player-name {
+        flex: 1;
+        text-align: left;
+        padding-right: 10px;
+      }
+
+      /* Player Numbers */
+      .player-number {
+        background: #ff4c4c; /* Red for outgoing player */
+        padding: 8px 15px;
+        border-radius: 10px;
+        font-size: 22px;
+      }
+
+      /* Substitution Time Styling */
+      #sub-time {
+        font-size: 22px;
+        color: #e3e3e3;
+        margin-top: 15px;
+        font-style: italic;
+        letter-spacing: 1px;
+      }
+
+      /* Fade-in and fade-out animations */
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fade-out {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+      }
+
+      /* Hidden class to control visibility */
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="caption-container" class="hidden">
+      <div class="player-info">
+        <div class="player-name">
+          <span id="player-out-name"></span>
+          <span class="player-number" id="player-out-number"></span>
+        </div>
+        <div class="arrow">→</div>
+        <div class="player-name">
+          <span id="player-in-name"></span>
+          <span class="player-number" id="player-in-number"></span>
+        </div>
+      </div>
+      <div id="sub-time"></div>
+    </div>
+
+    <script>
+      const container = document.getElementById("caption-container");
+
+      // Function to show substitution info
+      window.play = (data) => {
+        try {
+          const parsedData = JSON.parse(data);
+
+          document.getElementById("player-out-name").textContent =
+            parsedData.playerOut.name;
+          document.getElementById(
+            "player-out-number"
+          ).textContent = `#${parsedData.playerOut.number}`;
+          document.getElementById("player-in-name").textContent =
+            parsedData.playerIn.name;
+          document.getElementById(
+            "player-in-number"
+          ).textContent = `#${parsedData.playerIn.number}`;
+          document.getElementById(
+            "sub-time"
+          ).textContent = `Substitution Time: ${parsedData.subTime}`;
+
+          container.style.display = "block";
+          container.style.animation = "fade-in 1s forwards";
+          container.classList.remove("hidden");
+          setTimeout(() => {
+            stop();
+          }, 10000);
+          // Send the substitution data to the backend
+          sendSubstitutionData(parsedData);
+        } catch (e) {
+          console.error("Error in play function:", e);
+        }
+      };
+
+      // Function to send substitution data to the backend
+      const sendSubstitutionData = (data) => {
+        const substitutionData = {
+          playerOutName: data.playerOut.name,
+          playerOutNumber: data.playerOut.number,
+          playerInName: data.playerIn.name,
+          playerInNumber: data.playerIn.number,
+          subTime: data.subTime,
+        };
+
+        fetch("https://aelive-backend.onrender.com/api/substitution/log", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(substitutionData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Substitution data sent successfully:", data);
+          })
+          .catch((error) => {
+            console.error("Error sending substitution data:", error);
+          });
+      };
+
+      window.update = (data) => {
+        window.play(data);
+      };
+
+      window.stop = () => {
+        container.style.animation = "fade-out 1s forwards";
+        setTimeout(() => {
+          container.style.display = "none";
+          container.classList.add("hidden");
+        }, 1000);
+      };
+    </script>
+  </body>
+</html>
