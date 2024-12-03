@@ -87,8 +87,3 @@ You have now successfully set up the **CasperCG Server**, connected to it via Te
 Feel free to modify the substitution data to suit your needs, and let me know if you encounter any issues!
 ```
 
-### To use this `README.md` file:
-1. Copy the content into a new file named `README.md`.
-2. Save it in the folder where you have the **CasperCG Server** set up or in your project directory.
-
-This file will serve as a detailed guide to help anyone follow the steps for setting up and running the **CasperCG Server** and interacting with it via Telnet.
